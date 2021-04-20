@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on HOME</title>
+    <link>https://salehafarooki.github.io/CAO-Assignment-3/post/</link>
+    <description>Recent content in Posts on HOME</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Tue, 20 Apr 2021 15:59:58 +0500</lastBuildDate><atom:link href="https://salehafarooki.github.io/CAO-Assignment-3/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Profile</title>
+      <link>https://salehafarooki.github.io/CAO-Assignment-3/post/my-profile/</link>
+      <pubDate>Tue, 20 Apr 2021 15:59:58 +0500</pubDate>
+      
+      <guid>https://salehafarooki.github.io/CAO-Assignment-3/post/my-profile/</guid>
+      <description>Name Saleha Zahrah Farooki Age Nineteen Instituition National University of Science and Technology Education   SSC I &amp;amp; II : 2016-2017   HSSC I &amp;amp; II: 2018-2019   Current: Bachelors in Computer Science (Second Year)   </description>
+    </item>
+    
+    <item>
+      <title>CAO Assignment</title>
+      <link>https://salehafarooki.github.io/CAO-Assignment-3/post/my-first-post/</link>
+      <pubDate>Sat, 10 Apr 2021 14:55:37 +0500</pubDate>
+      
+      <guid>https://salehafarooki.github.io/CAO-Assignment-3/post/my-first-post/</guid>
+      <description>In our assignment we were asked to make a 64 bit Operating system. We followed the guidlines given in the two videos provided to us.
+Multiboot 2 Bootloader According to the video, we will make a x_86 compatible operating system with multiboot 2 bootloader. The multiboot 2 has certain files stored on it that are loaded in to memory when the bootloader boots the kernel.
+Qemu Qemu is an opensource emulator that does hardware virtualization.</description>
+    </item>
+    
+  </channel>
+</rss>

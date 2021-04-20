@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="My Website">
+<meta name="generator" content="Hugo 0.82.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/CAO-Assignment-3/css/style.css" type="text/css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" type="text/css">
+<link rel="alternate" href="/CAO-Assignment-3/index.xml" type="application/rss+xml" title="HOME">
+<title>CAO Assignment - HOME</title>
+</head>
+<body>
+
+<header>
+  <div class="container clearfix">
+    <a class="path" href="https://salehafarooki.github.io/CAO-Assignment-3/">[HOME]</a>
+    <span class="caret"></span>
+    <div class="right">
+      
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+
+<main role="main" class="article">
+  
+<article class="single" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="meta">
+
+    <span class="key">published on</span>
+    <span class="val"><time itemprop="datePublished" datetime="2021-04-10">April 10, 2021</time></span>
+
+
+
+  </div>
+  <h1 class="headline" itemprop="headline">CAO Assignment</h1>
+  <section class="body" itemprop="articleBody">
+    <p>In our assignment we were asked to make a 64 bit Operating system. We followed the guidlines given in the two videos provided to us.</p>
+<h3 id="multiboot-2-bootloader">Multiboot 2 Bootloader</h3>
+<p>According to the video, we will make a x_86 compatible operating system with multiboot 2 bootloader. The multiboot 2 has certain files stored on it that are loaded in to memory when the bootloader boots the kernel.</p>
+<h3 id="qemu">Qemu</h3>
+<p>Qemu is an opensource emulator that does hardware virtualization. We have to install qemu which will emaluate the operating system instead of downloading all the necessary files. In simpler words, it creates a virtual machine on your own device capable of emulating another operating system without an prerequisites.</p>
+<h3 id="making-a-docker-image">Making a Docker Image</h3>
+<p>We base our docker image on the <a href="https://hub.docker.com/r/randomdude/gcc-cross-x86_64-elf">premade docker image</a> from docker hub which will have all the compilation tools we will need. We will build our image and give it a tag name. Then we will create an instance of that image. After this, we are now in a virtual linux machine.</p>
+<h3 id="coding-the-operating-system">Coding the Operating System</h3>
+<ol>
+<li>The Assembly code that is written will be entry point of our operating system and we will integrate it to our multiboot. The bootloader will load our operaing system by identifying <em><strong>magic data</strong></em> so that it knows that there is an Operating System for it to run.</li>
+<li>There would be a main assembly file that would be the entry point of our operating system.</li>
+<li>The linker file will specify the location of the start of our operating system which is in the main assembly file.</li>
+<li>Next we configure <strong>GRUB</strong> (Grand Unified Bootloader) which is to load the Linux kernel into memory. Then the kernel takes over.</li>
+<li>Then we make a <strong>Make file</strong>. We hold all our source files in a variable. We basically want to convert all the source file into object files.
+<ul>
+<li>We will add commands to convert the source files and make directories to store the object files. We also add commands to compile our assembly file.</li>
+<li>The final <strong>iso</strong> files will have a seperate directory which we will make.</li>
+<li>Then with the linker command, we link all the object files and output it to a directory (kernel.bin)</li>
+<li>Then we generate our <strong>iso</strong> files using grub.</li>
+<li>We run the make command to generate the kernel and iso files.</li>
+</ul>
+</li>
+<li>We exit out of the docker image container and emulate our operating system using <strong>qemu</strong>.</li>
+</ol>
+<h3 id="setting-up-the-stack">Setting up the Stack</h3>
+<p>After setting up the stack, the code will handle all the stack manupilations. We will allocate a portion of our memory for the stack and will be reserved for when the bootloader loads the <strong>kernel</strong>.</p>
+<h3 id="converting-the-kernel-into-64-bit-mode">Converting the Kernel into 64 bit mode</h3>
+<p>To do this we must switch our CPU to <strong>Long Mode</strong> which is the mode where a 64-bit OS can access 64-bit instructions and registers.
+We will take advantage of our stack and convert everything into functions.</p>
+<ol>
+<li>Check that the code has been loaded by a Multiboot 2 bootloader.</li>
+<li>Check our CPU information (CPU ID). We check the CPU ID by changing the ID bit of the flag register which is bit 21. Then we push it into the stack and then pop it. If the ID bit remains unchanged then that means the CPU supports CPU ID.</li>
+<li>Then we check whether the CPU supports long mode. A specific value is stored in the eax register and fed to a predefined CPUID function. This will in turn store something back in the eax register. If the value now stored in eax is less than the orginal value then long mode is not supported.</li>
+<li>Otherwise we can check if long mode is <em><strong>available</strong></em>. We run the CPUID instruction again and this time it will store something in the edx register. If the 29th bit is set then the long mode is available.</li>
+<li>
+<h4 id="implement-virtual-memory-through-paging">Implement virtual memory through Paging:</h4>
+<ul>
+<li>Paging allows us to map virtual addresses to physical addresses.</li>
+<li>Every virtual address takes up 48 bits. Each 9 bits of the address corresponds to an entry in a page level. That entry then points to another page table of a lower level. Finally the level 1 page table corresponds to the some physical address.</li>
+<li>THe CPU generates the address of the highest level page table.</li>
+<li>We will reserve 4 KBs of memory for each page table. Our page tables will have 3 levels (there are usually 4).</li>
+<li>Now we will set up the page tables. We need to establish <em><strong>identity mapping</strong></em> which maps the physical address to a virtual address. Paging will automatically be enabled when long mode is enabled.</li>
+<li>Now we will enable paging. We have to pass the page table location to the CPU. The CPU looks for this page table in CR3 register. We will copy the value of the highest level page table into the CR3 register.</li>
+<li>Enable <strong>Physical Address Extension</strong>  Flag (5th Flag)which is to allow the kernel to address more than 4GB of physical RAM.</li>
+<li>Now we will enable long mode.</li>
+<li>Implement the Global Descriptor Table.</li>
+</ul>
+</li>
+</ol>
+<h3 id="c-code---custom-print-function">C code - Custom Print Function</h3>
+<p>Rather than printing OK using assembly, we will make a custom print function and cal it in the main asm file which is now in long mode.</p>
+<h3 id="changes-to-the-makefile">Changes to the MakeFile</h3>
+<p>We now have to make source and object files for the C code and for the kernel files. We will build our code again and use qemu to emulate our operating system.</p>
+
+  </section>
+</article>
+
+</main>
+
+</div>
+
+<footer>
+  <div class="container">
+    <span class="copyright">&copy; 2021 HOME - <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
+
